@@ -18,6 +18,7 @@ import { Grid } from '@material-ui/core';
 import {logoDiscord, logoTwitter,logoYoutube} from "ionicons/icons";
 import usePersistentState from '../hooks/usePersistentState';
 import meLogo from '../images/me.png';
+import useWeb3 from '../hooks/useWeb3';
 
 /**
  * The "Login" page to which all unauthenticated users are redirected to
@@ -59,6 +60,10 @@ function Login() {
 
     const isMobileDevice = useMemo(() => isPlatform("mobile"), []);
 
+    const contractAddress = '0xb2ea51BAa12C461327d12A2069d47b30e680b69D'; // Replace with your ERC-20 contract address
+    const userAddress = '0x248Dd3836E2A8B56279C04addC2D11F3c2497836'; // Replace with the user's address
+
+    const { balance, web3 } = useWeb3(contractAddress, userAddress);
     useEffect(() => {
         if (code && !error && !user) {
             // exchange authorization code given by discord for an access token which we can sign in with using firebase
@@ -189,7 +194,7 @@ function Login() {
                                     </div>
                                     <IonButton className='buy-nft-btn mt-4 h-11'color='medium' onClick={()=> window.open('https://magiceden.io/marketplace/soldecoder', "_blank")}>
                                         <img src={meLogo} className="me-logo mr-2"/>
-                                        Buy 1 NFT to gain access
+                                        {balance && parseFloat(balance) > 0 ? balance : "Buy 1 NFT to gain access"} 
                                     </IonButton>
                                     <IonButton className='buy-nft-btn mt-3 h-11' color='medium' onClick={()=> window.open('https://discord.gg/sol-decoder', "_blank")}>
                                         { <IonIcon icon={logoDiscord} className="big-emoji mr-2"/>}
